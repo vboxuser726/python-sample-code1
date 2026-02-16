@@ -18,8 +18,7 @@ triggers {
 		        sh "kubectl get deployment"
                 echo "Applying Kubernetes YAML files..."
                 sh '''
-                  kubectl apply -f deployment.yaml
-                  kubectl apply -f service.yaml
+                  kubectl apply -f .
                 '''
             }
         }
