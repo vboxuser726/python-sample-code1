@@ -19,7 +19,7 @@ triggers {
         stage('Build Docker Image') {
              steps {
                  sh '''
-          docker build -t vboxuser2/py-feb26:$BUILD_NUMBER python-sample-code1
+          docker build -t vboxuser2/py-feb26:$BUILD_NUMBER python-sample-code
         '''
       }
     }
