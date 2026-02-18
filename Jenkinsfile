@@ -16,7 +16,13 @@ triggers {
         sh "docker ps -a"
       }
     }
-
+        stage('Build Docker Image') {
+             steps {
+                 sh '''
+          docker build -t vboxuser2/py-feb26:$BUILD_NUMBER python-sample-code1
+        '''
+      }
+    }
         stage('Run Kubernetes Manifests') {
             steps {
                 sh "kubectl get pods"
