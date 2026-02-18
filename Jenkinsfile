@@ -24,6 +24,7 @@ triggers {
         }
         stage('verification') {
             steps {
+                sh "sleep 20"
                 sh "curl 192.168.49.2:30110"
             }
         }
