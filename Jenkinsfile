@@ -10,6 +10,12 @@ triggers {
                 checkout scm
             }
         }
+        stage('Check the docker cli') {
+      steps {
+        sh "docker --version"
+        sh "docker ps -a"
+      }
+    }
 
         stage('Run Kubernetes Manifests') {
             steps {
