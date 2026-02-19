@@ -23,6 +23,23 @@ triggers {
         '''
       }
     }
+        stage('Push Docker Image') {
+            steps {
+            withCredentials([
+            usernamePassword(
+                credentialsId: 'dockerhub-id-cred',
+                usernameVariable: 'DOCKERHUB_USER',
+                passwordVariable: 'DOCKERHUB_PASS'
+            )
+            ]) {
+            sh '''
+                echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
+                docker push vboxuser2/py-feb26:$BUILD_NUMBER
+                docker logout
+            '''
+            }
+        }
+    }
         stage('Run Kubernetes Manifests') {
             steps {
                 sh "kubectl get pods"
