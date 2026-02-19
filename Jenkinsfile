@@ -40,15 +40,22 @@ triggers {
             }
         }
     }
-        stage('Run Kubernetes Manifests') {
+    stage('Deploy - Template and Apply') {
+        steps {
+            sh '''
+            export IMAGE_TAG=$BUILD_NUMBER
+            envsubst < py-deploy.yaml | kubectl apply -f -
+            kubectl rollout status deployment/py-deploy
+            '''
+        }
+    }
+        stage('checking deployment') {
             steps {
                 sh "kubectl get pods"
 		        sh "kubectl get rs"
 		        sh "kubectl get deployment"
-                echo "Applying Kubernetes YAML files..."
-                sh '''
-                  kubectl apply -f .
-                '''
+                sh "kubectl describe pods  | grep Image"
+             
             }
         }
         stage('verification') {
