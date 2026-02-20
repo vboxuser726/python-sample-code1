@@ -37,7 +37,7 @@ pipeline {
         sh '''
           trivy image \
             --severity HIGH,CRITICAL \
-            --no-progress \
+            --exit-code 1 \
             ${IMAGE_NAME}:$BUILD_NUMBER
         '''
       }
