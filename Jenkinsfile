@@ -1,45 +1,65 @@
 pipeline {
-    agent { label 'java' }
-triggers {
+  agent {label 'java'}
+  triggers {
     pollSCM('H/2 * * * *')
-}
-    stages {
-        stage('Git Clone') {
-            steps {
-                echo "Cloning GitHub repo..."
-                checkout scm
-            }
-        }
-        stage('Check the docker cli') {
+  }
+
+   environment {
+    IMAGE_NAME = "vboxuser2/py-feb26"
+    Host_IP = "192.168.49.2"
+    Host_Port = "30110"
+    hub_cred = "dockerhub-id-cred"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Check the docker cli') {
       steps {
         sh "docker --version"
         sh "docker ps -a"
       }
     }
-        stage('Build Docker Image') {
-             steps {
-                 sh '''
-          docker build -t vboxuser2/py-feb26:$BUILD_NUMBER aapp1
+    stage('Build Docker Image') {
+      steps {
+        sh '''
+          docker build -t ${IMAGE_NAME}:$BUILD_NUMBER python-sample-code
         '''
       }
     }
-        stage('Push Docker Image') {
-            steps {
+    stage('Trivy Image Scan') {
+      steps {
+        sh '''
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --no-progress \
+            ${IMAGE_NAME}:$BUILD_NUMBER
+        '''
+      }
+    }
+    stage('Push Docker Image') {
+        steps {
             withCredentials([
             usernamePassword(
-                credentialsId: 'dockerhub-id-cred',
+                credentialsId: "${hub_cred}",
                 usernameVariable: 'DOCKERHUB_USER',
                 passwordVariable: 'DOCKERHUB_PASS'
             )
             ]) {
             sh '''
                 echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-                docker push vboxuser2/py-feb26:$BUILD_NUMBER
+                docker push ${IMAGE_NAME}:$BUILD_NUMBER
                 docker logout
             '''
             }
         }
     }
+
     stage('Deploy - Template and Apply') {
         steps {
             sh '''
@@ -49,20 +69,26 @@ triggers {
             '''
         }
     }
-        stage('checking deployment') {
-            steps {
-                sh "kubectl get pods"
-		        sh "kubectl get rs"
-		        sh "kubectl get deployment"
-                sh "kubectl describe pods  | grep Image"
-             
-            }
-        }
-        stage('verification') {
-            steps {
-                sh "sleep 20"
-                sh "curl 192.168.49.2:30110"
-            }
-        }
+
+    stage('Check on Kubernetes') {
+      steps {
+        sh '''
+
+          kubectl get pods
+          kubectl get svc
+          kubectl get deployments
+          
+        '''
+      }
     }
+
+    stage('Application Health Check') {
+      steps {
+        sh '''
+          sleep 10
+          curl http://${192.168.49.2}:${30110}
+        '''
+      }
+    }
+  }
 }
