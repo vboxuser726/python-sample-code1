@@ -28,7 +28,7 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         sh '''
-          docker build -t ${IMAGE_NAME}:$BUILD_NUMBER python-sample-code1
+          docker build -t ${IMAGE_NAME}:$BUILD_NUMBER aapp1
         '''
       }
     }
@@ -86,7 +86,7 @@ pipeline {
       steps {
         sh '''
           sleep 10
-          curl http://${192.168.49.2}:${30110}
+          curl http://${Host_IP}:${Host_Port}
         '''
       }
     }
