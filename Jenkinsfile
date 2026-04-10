@@ -6,7 +6,7 @@ pipeline {
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
-    Host_IP = "192.168.49.2"
+    Host_IP = "54.237.175.32"
     Host_Port = "30110"
     hub_cred = "dockerhub-id-cred"
   }
@@ -61,6 +61,8 @@ pipeline {
     }
 
     stage('Deploy - Template and Apply') {
+        agent {label 'kube'}
+
         steps {
             sh '''
             export IMAGE_TAG=$BUILD_NUMBER
@@ -71,6 +73,8 @@ pipeline {
     }
 
     stage('Check on Kubernetes') {
+        agent {label 'kube'}
+
       steps {
         sh '''
 
