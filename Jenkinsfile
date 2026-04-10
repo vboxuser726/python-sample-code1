@@ -1,5 +1,5 @@
 pipeline {
-  agent {label 'kub'}
+  agent {label 'kube'}
   triggers {
     pollSCM('H/2 * * * *')
   }
