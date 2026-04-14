@@ -6,7 +6,7 @@ pipeline {
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
-    Host_IP = "54.237.175.32"
+    Host_IP = "44.202.114.214"
     Host_Port = "30110"
     hub_cred = "dockerhub-id-cred"
   }
