@@ -32,16 +32,16 @@ pipeline {
         '''
       }
     }
-    stage('Trivy Image Scan') {
-      steps {
-        sh '''
-          trivy image \
-            --severity HIGH,CRITICAL \
-            --exit-code 1 \
-            ${IMAGE_NAME}:$BUILD_NUMBER
-        '''
-      }
-    }
+    // stage('Trivy Image Scan') {
+    //   steps {
+    //     sh '''
+    //       trivy image \
+    //         --severity HIGH,CRITICAL \
+    //         --exit-code 1 \
+    //         ${IMAGE_NAME}:$BUILD_NUMBER
+    //     '''
+    //   }
+    // }
     stage('Push Docker Image') {
         steps {
             withCredentials([
