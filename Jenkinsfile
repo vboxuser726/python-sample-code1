@@ -1,8 +1,8 @@
 pipeline {
   agent {label 'java'}
-  triggers {
-    pollSCM('H/2 * * * *')
-  }
+  // triggers {
+  //   pollSCM('H/2 * * * *')
+  // }
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
