@@ -6,10 +6,14 @@ pipeline {
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
-    Host_IP = "44.202.114.214"
+    Host_IP = "3.95.10.239"
     Host_Port = "30110"
     hub_cred = "dockerhub-id-cred"
+    SONAR_TOKEN = credentials('sonar-token')
   }
+   tools {
+        sonarScanner 'sonar-scanner'
+    }
 
   stages {
 
@@ -25,8 +29,30 @@ pipeline {
         sh "docker ps -a"
       }
     }
-    stage('Build Docker Image') {
-      steps {
+    stage('SonarCloud Analysis') {
+            steps {
+                withSonarQubeEnv('SonarCloud') {
+                    sh '''
+                    sonar-scanner \
+                      -Dsonar.projectKey=vboxuser726_python-sample-code \
+                      -Dsonar.organization=vboxuser726 \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=https://sonarcloud.io \
+                      -Dsonar.login=$SONAR_TOKEN
+                    '''
+                }
+            }
+        }
+
+      stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+      stage('Build Docker Image') {
+        steps {
         sh '''
           docker build -t ${IMAGE_NAME}:$BUILD_NUMBER aapp1
         '''
