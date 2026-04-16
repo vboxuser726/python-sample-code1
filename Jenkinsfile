@@ -11,9 +11,9 @@ pipeline {
     hub_cred = "dockerhub-id-cred"
     SONAR_TOKEN = credentials('sonar-token')
   }
-   tools {
-        sonarRunner 'sonar-scanner'
-    }
+  //  tools {
+  //       sonar 'sonar-scanner'
+  //   }
 
   stages {
 
