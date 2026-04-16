@@ -6,14 +6,14 @@ pipeline {
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
-    Host_IP = "3.95.10.239"
+    Host_IP = "54.82.236.179"
     Host_Port = "30110"
     hub_cred = "dockerhub-id-cred"
     SONAR_TOKEN = credentials('sonar-token')
   }
-   tools {
-        sonarScanner 'sonar-scanner'
-    }
+  //  tools {
+  //       sonarScanner 'sonar-scanner'
+  //   }
 
   stages {
 
