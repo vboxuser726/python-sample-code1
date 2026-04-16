@@ -12,7 +12,7 @@ pipeline {
     SONAR_TOKEN = credentials('sonar-token')
   }
    tools {
-        sonarScanner 'sonar-scanner'
+        sonarRunner 'sonar-scanner'
     }
 
   stages {
