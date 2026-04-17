@@ -6,7 +6,7 @@ pipeline {
 
    environment {
     IMAGE_NAME = "vboxuser2/py-feb26"
-    Host_IP = "54.82.236.179"
+    Host_IP = "18.212.169.91"
     Host_Port = "30110"
     hub_cred = "dockerhub-id-cred"
     SONAR_TOKEN = credentials('sonar-token')
@@ -58,16 +58,16 @@ pipeline {
         '''
       }
     }
-    // stage('Trivy Image Scan') {
-    //   steps {
-    //     sh '''
-    //       trivy image \
-    //         --severity HIGH,CRITICAL \
-    //         --exit-code 1 \
-    //         ${IMAGE_NAME}:$BUILD_NUMBER
-    //     '''
-    //   }
-    // }
+    stage('Trivy Image Scan') {
+      steps {
+        sh '''
+          trivy image \
+            --severity HIGH,CRITICAL \
+            --exit-code 1 \
+            ${IMAGE_NAME}:$BUILD_NUMBER
+        '''
+      }
+    }
     stage('Push Docker Image') {
         steps {
             withCredentials([
